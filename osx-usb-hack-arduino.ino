@@ -1,18 +1,17 @@
 // OSX USB Hacking Device to use with an Arduino Leonardo Board
 // By Angel Diaz (https://twitter.com/angeldiazibarra)
-// Inspired by Samy Kamkar's USBdriveby (https://samy.pl/usbdriveby)
 
 // Adapted for Spanish keyboard layout
 
 #define LED_PIN 13
-#define KEY_LEFT_CTRL   0x80
+#define KEY_LEFT_CTRL     0x80
 #define KEY_LEFT_SHIFT    0x81
-#define KEY_LEFT_ALT    0x82
-#define KEY_LEFT_GUI    0x83
+#define KEY_LEFT_ALT      0x82
+#define KEY_LEFT_GUI      0x83
 #define KEY_RIGHT_CTRL    0x84
 #define KEY_RIGHT_SHIFT   0x85
-#define KEY_RIGHT_ALT   0x86
-#define KEY_RIGHT_GUI   0x87
+#define KEY_RIGHT_ALT     0x86
+#define KEY_RIGHT_GUI     0x87
 
 void setup()
 {
