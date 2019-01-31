@@ -132,7 +132,7 @@ void openapp(String app){
   delay(50);
     
   typeln(app);
-  delay(200);
+  delay(300);
 }
 
 
