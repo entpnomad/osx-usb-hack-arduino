@@ -129,12 +129,9 @@ void cmd(int key){
 void openapp(String app){
   // CMD + Space to open Spotlight
   cmd(32);
-  
-  // wait for new window to open:
   delay(50);
     
   typeln(app);
-  
   delay(200);
 }
 
