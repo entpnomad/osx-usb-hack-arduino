@@ -140,7 +140,7 @@ void openapp(String app){
   delay(50);
     
   typeln(app);
-  delay(300);
+  delay(200);
 }
 
 
